@@ -24,7 +24,7 @@ public class BuffCard extends Card {
             return;
         }
 
-        System.out.printf("%%s MaxHP %d increase to +%d", player.getName(), player.getMaxHp(), hpBoost);
+        System.out.printf("%s MaxHP %d increase to +%d", player.getName(), player.getMaxHp(), hpBoost);
         player.setMaxHp(hpBoost);
         player.spendMana(super.getManaCost());
         

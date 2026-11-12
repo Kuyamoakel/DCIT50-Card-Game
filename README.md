@@ -46,3 +46,17 @@ Updated print statements to use formatted output `sotuf` for cleaner, more consi
 - `PhysicalCard`
 - `PureCard`
 - `BattleEngine`
+
+### November 12, 2026 — 7:56 AM | **Developer:** `Louie`
+
+#### Card Output Format Fix
+
+Corrected escaped `%s` placeholders in the card play messages. The placeholders now match their arguments, preventing `IllegalFormatConversionException` when a card is played.
+
+**Updated classes:**
+
+- `BuffCard`
+- `DemiCard`
+- `MagicCard`
+- `PhysicalCard`
+- `PureCard`

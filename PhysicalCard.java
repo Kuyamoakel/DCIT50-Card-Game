@@ -16,7 +16,7 @@ public class PhysicalCard extends Card {
             return;
         }
 
-        System.out.printf("%%s Cast %s Dealt %d to %s",player.getName(), super.getName(), damage, boss.getName());
+        System.out.printf("%s Cast %s Dealt %d to %s", player.getName(), super.getName(), damage, boss.getName());
         player.spendMana(super.getManaCost());
         boss.takeDamage(damage);
 
