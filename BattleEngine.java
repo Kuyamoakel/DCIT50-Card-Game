@@ -84,6 +84,9 @@ public class BattleEngine {
                 card.play(player, boss);
 
             }     
+
+            boss.endTurn();
+            
             if (!boss.isDead() && player.getHp() > 0) {
                 boss.rageMode();
 
