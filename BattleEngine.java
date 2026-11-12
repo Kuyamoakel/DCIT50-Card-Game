@@ -110,6 +110,7 @@ public class BattleEngine {
                     turn++;
                 }
                 if (!boss.isDead() && player.getHp() > 0 && hand.isEmpty()) {
+                    boss.endTurn();
                     boss.rageMode();
 
                     int hpBeforeAttack = player.getHp();

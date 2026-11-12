@@ -4,7 +4,7 @@ public class Player {
     private int hp;
     private int mana;
     private int maxHp = 100;
-    private int maxMana = 10;
+    private int maxMana = 20;
 
     public Player(String name, int hp, int mana) {
 
