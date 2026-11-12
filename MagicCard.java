@@ -3,12 +3,14 @@ public class MagicCard extends Card {
     private int damage;
     private int healAmount;
     private int manaRestore;
+    private int StaggerFiller;
 
-    public MagicCard(String name, int manaCost, int damage, int healAmount, int manaRestore) {
+    public MagicCard(String name, int manaCost, int damage, int healAmount, int manaRestore, int StaggerFiller) {
         super(name, manaCost);
         this.damage = damage;
         this.healAmount = healAmount;
         this.manaRestore = manaRestore;
+        this.StaggerFiller = StaggerFiller;
     }
 
     @Override 
@@ -20,13 +22,17 @@ public class MagicCard extends Card {
             return;
         }
 
-         System.out.printf("%%s Cast %s Dealt %d to %s",player.getName(), super.getName(), damage, boss.getName());
-         System.out.printf("%nHealed player by %d HP", healAmount);
-         System.out.printf("%nRestored %d Mana.", manaRestore);
-         player.spendMana(super.getManaCost());
-         boss.takeDamage(damage);
-         player.heal(healAmount);
-         player.restoreMana(manaRestore);
+        // JUST REARRANGE IT - JA
+        player.spendMana(super.getManaCost());
+        boss.takeDamage(damage);
+        player.heal(healAmount);
+        player.restoreMana(manaRestore);
+        boss.addStaggerPTS(this.StaggerFiller);
+
+        System.out.println("Player Cast " + super.getName() + " Dealt "  + damage + " to " + boss.getName());
+        System.out.println("Healed player by " + healAmount + " HP");
+        System.out.println("Restored " + manaRestore + " mana.");
+        System.out.println("STAGGER METER STATUS: " + boss.getStaggerMeter() + " | " + boss.getMaxStagger());
 
         
     }
@@ -39,6 +45,7 @@ public class MagicCard extends Card {
         System.out.printf("%nDamage: %d", damage);
         System.out.printf("%nHeal: %d", healAmount);
         System.out.printf("%nRestored: %d", manaRestore);
+        System.out.println("StaggerDamge: " + this.StaggerFiller);
         System.out.println("----------------------------------------");
     }
 }
