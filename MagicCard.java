@@ -31,8 +31,12 @@ public class MagicCard extends Card {
          player.heal(healAmount);
          player.restoreMana(manaRestore);
          boss.addStaggerPTS(StaggerFiller);
-         System.out.printf("STAGGER METER STATUS: %d | %d%n", boss.getStaggerMeter(), boss.getMaxStagger());
-
+         if (boss.isDead()){
+            System.out.println("\n=================================");
+         }else {
+            System.out.printf("STAGGER METER STATUS: %d | %d%n", boss.getStaggerMeter(), boss.getMaxStagger());
+            System.out.println("=================================");
+         }
 
         
     }

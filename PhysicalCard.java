@@ -22,7 +22,12 @@ public class PhysicalCard extends Card {
         player.spendMana(super.getManaCost());
         boss.takeDamage(damage);
         boss.addStaggerPTS(StaggerFiller); 
-        System.out.printf("%nSTAGGER METER STATUS: %d | %d%n", boss.getStaggerMeter(), boss.getMaxStagger());
+        if (boss.isDead()){
+            System.out.println("\n=================================");
+        }else {
+            System.out.printf("\nSTAGGER METER STATUS: %d | %d%n", boss.getStaggerMeter(), boss.getMaxStagger());
+            System.out.println("=================================");
+        }
 
     }
 

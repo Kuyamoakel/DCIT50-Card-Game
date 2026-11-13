@@ -24,7 +24,12 @@ public class DemiCard extends Card {
         boss.addStaggerPTS(this.StaggerFiller);
 
         System.out.printf("%s Cast %s Dealt %.0f%% of current HP (%d HP) to %s%n", player.getName(), super.getName(), damage, finalDamage, boss.getName());
-        System.out.printf("STAGGER METER STATUS: %d | %d%n", boss.getStaggerMeter(), boss.getMaxStagger());
+        if (boss.isDead()){
+            System.out.println("\n=================================");
+        }else {
+            System.out.printf("STAGGER METER STATUS: %d | %d%n", boss.getStaggerMeter(), boss.getMaxStagger());
+            System.out.println("=================================");
+        }
 
     }
 

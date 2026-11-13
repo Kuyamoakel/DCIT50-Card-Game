@@ -13,6 +13,7 @@ public class Enemy {
     private int staggerTurns = 0;
     private boolean skipTurn = false;
     private int bonusDamage = 20;
+    private boolean BonusDamageUsed = false;
 
     public Enemy(String name, int hp, int damage) {
         if (hp <= 0) {
@@ -65,6 +66,8 @@ public class Enemy {
         if (amount < 0) {
             throw new IllegalArgumentException("Take Damage cannot be negative");
         }
+
+        this.BonusDamageUsed = false; 
         if (amount == 0){ 
             return;
         } 
@@ -74,6 +77,9 @@ public class Enemy {
         if (this.staggerTurns > 0) {
             this.staggerTurns = 0;
             this.staggerMeter = 0;
+
+            this.BonusDamageUsed = true; // THIS CARD IS ONE THAT USED THE BONUS DAMAGE
+
             finalDamage = amount + this.bonusDamage;
             System.out.println("\n=================================");
             System.out.println("STAGGER BONUS USED! +" + bonusDamage + " damage: " + amount + " -> " + finalDamage);
@@ -138,6 +144,7 @@ public class Enemy {
 
     // STAGGER EXTRA METHODS
     public void endTurn(){
+        this.BonusDamageUsed = false; // RESET THE BONUS DAMAGE IN EACH TURN
         if (this.staggerTurns > 0) {
             this.staggerMeter = 0;
             this.staggerTurns = 0;
@@ -154,6 +161,12 @@ public class Enemy {
 
     public void addStaggerPTS(int amount){
         if (isDead()) {
+            return;
+        }
+
+        if (this.BonusDamageUsed){
+            this.BonusDamageUsed = false;
+            System.out.println("This card broke the stagger, so it adds no stagger points.");
             return;
         }
 
