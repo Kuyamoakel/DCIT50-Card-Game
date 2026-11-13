@@ -140,15 +140,20 @@ public class BattleEngine {
                         boss.endTurn();
                         boss.attack(player);
                     }
+                    player.restoreMana(1);
                     playerTotalDamageTaken += hpBeforeAttack - player.getHp();
                 }
                 turn++;
             }
         }
-
             System.out.println("\n------------ BATTLE FINISHED ------------");
             if (!boss.isDead() && player.getHp() > 0 && masterDeck.getCardPool().isEmpty() && hand.isEmpty()) {
                 System.out.println("~~~ INSUFFICIENT CARDS TO PULL ~~~");
+            }
+            if (player.getHp() <= 0) {
+                System.out.printf("%n~~~ %s LOSE ~~~%n", player.getName());
+            } else {
+                System.out.printf("%n~~~ %s WINS ~~~%n", player.getName());
             }
             System.out.printf("%n%s Final Status%n", player.getName());
             System.out.printf("HP: %d/%d | Mana: %d/%d", player.getHp(), player.getMaxHp(), player.getMana(), player.getMaxMana());
@@ -162,6 +167,9 @@ public class BattleEngine {
             System.out.printf("%s Final Status", boss.getName());
             System.out.printf("%nHP: %s/%s %n", boss.getHp(), boss.getMaxHp());
             System.out.println("Total Damage Taken: " + (bossStartingHP - boss.getHp()));
-        
+            System.out.println("---------------------------");
+
+            hand.clear();
     }
+
 }   

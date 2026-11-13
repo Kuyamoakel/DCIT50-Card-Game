@@ -1,11 +1,10 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
 public class Main {
     private static final Scanner in = new Scanner(System.in);
     public static void main(String[] args) {
-
+        boolean isRunning = true;
         BattleEngine engine = new BattleEngine();
         Deck masterDeck = new Deck(engine);
         Difficulty difficulty = null;
@@ -73,7 +72,39 @@ public class Main {
                 System.out.println("No boss Found!");
                 return;
             }
-            startGame(engine,hero,boss,masterDeck, in); // used a static method for player input
+            while (isRunning) {
+                startGame(engine,hero,boss,masterDeck, difficulty, in); // used a static method for player input
+                String choice;
+                do {
+                    System.out.print("Would you like to continue? (y/n): ");
+                    choice = in.nextLine().strip().toLowerCase();
+                    if (!choice.equals("y") && !choice.equals("n")) {
+                        System.out.println("Please enter y or n.");
+                    }
+                } while (!choice.equals("y") && !choice.equals("n"));
+
+                switch (choice) {
+                    case "y":
+                        CharacterClass characterClass = selectCharacter();
+                        if (characterClass == null) {
+                            isRunning = false;
+                            break;
+                        }
+                        Player newHero = new Player("Player", characterClass);
+                        Enemy newBoss = nextBattle(engine, difficulty);
+                        if (newBoss == null) {
+                            isRunning = false;
+                            break;
+                        }
+                        hero = newHero;
+                        boss = newBoss;
+                        break;
+                    case "n":
+                        System.out.println("Thank you for Playing!");
+                        isRunning = false;
+                        break;
+                }
+            }
     }
     public static CharacterClass selectCharacter() {
         System.out.println("====== SELECT CLASS ======");
@@ -95,6 +126,9 @@ public class Main {
         List<Enemy> bosses = new ArrayList<>();
         System.out.println("====== SELECT BOSS ======");
         for (Difficulty difficulty : Difficulty.values()) {
+            if (difficulty == Difficulty.ALL) {
+                continue;
+            }
             for (Enemy boss : difficulty.getBosses()) {
                 bosses.add(boss);
                 System.out.printf("%2d. %-22s (%s) HP: %d | Damage: %d%n",
@@ -102,27 +136,56 @@ public class Main {
                         boss.getHp(), boss.getDamage());
             }
         }
+        while (true) {
+            System.out.print("Choose a boss: ");
+            try {
+                int choice = Integer.parseInt(in.nextLine().strip());
+                if (choice < 1 || choice > bosses.size()) {
+                    System.out.println("Invalid boss selection!");
+                    continue;
+                }
+                return bosses.get(choice - 1);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid boss selection!");
+            }
+        }
+    }
 
-        System.out.print("Choose a boss: ");
+    private static void startGame(BattleEngine engine,Player hero, Enemy boss, Deck masterDeck, Difficulty difficulty, Scanner in) {;
+        System.out.printf("Class: %s | HP: %d | Mana: %d%n",
+                hero.getClassName(), hero.getHp(), hero.getMana());
+        if (!boss.isDead()) {
+            masterDeck = new Deck(engine);
+            engine.drawHand(masterDeck, 4);
+            engine.executeTurn(hero, boss, masterDeck, in);
+        }
+    }
+    public static Enemy nextBattle(BattleEngine engine, Difficulty difficulty) {
+        List<Enemy> bosses = new ArrayList<>();
+        difficulty = Difficulty.ALL;
+        System.out.printf("===== CHOOSE NEXT OPPONENT ===== %n");
+            for (int i = 0; i < difficulty.getBosses().size(); i++) {
+                if (i <= 2) {
+                    Enemy boss = engine.drawBoss(difficulty.getBosses());
+                    bosses.add(boss);
+                    System.out.printf("%2d. %-22s HP: %d | Damage: %d%n",
+                            bosses.size(), boss.getName(),
+                            boss.getHp(), boss.getDamage());
+                }
+        }
+        System.out.print("Choose your next opponent('0' to end session): ");
         try {
             int choice = Integer.parseInt(in.nextLine().strip());
-            if (choice < 1 || choice > bosses.size()) {
-                System.out.println("Invalid boss selection!");
+            if (choice == 0) {
                 return null;
+            }
+            else if (choice < 1 || choice > bosses.size()) {
+                System.out.println("Invalid boss.");
             }
             return bosses.get(choice - 1);
         } catch (NumberFormatException e) {
             System.out.println("Invalid boss selection!");
-            return null;
         }
-    }
-
-    public static void startGame(BattleEngine engine,Player hero, Enemy boss, Deck masterDeck, Scanner in) {
-        System.out.printf("Class: %s | HP: %d | Mana: %d%n",
-                hero.getClassName(), hero.getHp(), hero.getMana());
-        if (!boss.isDead()) {
-            engine.drawHand(masterDeck, 4);
-            engine.executeTurn(hero, boss, masterDeck, in);
-        }
+        return null;
     }
 }
