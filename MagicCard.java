@@ -4,11 +4,14 @@ public class MagicCard extends Card {
     private int healAmount;
     private int manaRestore;
 
-    public MagicCard(String name, int manaCost, int damage, int healAmount, int manaRestore) {
+    private int StaggerFiller;
+
+    public MagicCard(String name, int manaCost, int damage, int healAmount, int manaRestore, int StaggerFiller) {
         super(name, manaCost);
         this.damage = damage;
         this.healAmount = healAmount;
         this.manaRestore = manaRestore;
+        this.StaggerFiller = StaggerFiller;
     }
 
     @Override 
@@ -27,6 +30,13 @@ public class MagicCard extends Card {
          boss.takeDamage(damage);
          player.heal(healAmount);
          player.restoreMana(manaRestore);
+         boss.addStaggerPTS(StaggerFiller);
+         if (boss.isDead()){
+            System.out.println("\n=================================");
+         }else {
+            System.out.printf("STAGGER METER STATUS: %d | %d%n", boss.getStaggerMeter(), boss.getMaxStagger());
+            System.out.println("=================================");
+         }
 
         
     }
@@ -39,6 +49,7 @@ public class MagicCard extends Card {
         System.out.printf("%nDamage: %d", damage);
         System.out.printf("%nHeal: %d", healAmount);
         System.out.printf("%nRestored: %d", manaRestore);
+        System.out.printf("%nStagger Damage: %d", StaggerFiller);
         System.out.printf("%n----------------------------------------%n");
     }
 }

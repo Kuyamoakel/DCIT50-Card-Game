@@ -8,7 +8,7 @@ The features below may be assigned to group members for development.
 
 | Feature | Status | Developer |
 |---|---|---|
-| Stagger Meter | Completed/Can't Merge | James |
+| Stagger Meter | Completed | James |
 | Temporary Immunity After Rage Mode | Postponed | James |
 | Player Picks Card | Completed | Van |
 | Multiple Bosses | Completed | Akel |
@@ -148,3 +148,68 @@ The choice is checked against the list's valid number range. Non-numeric or
 out-of-range input is rejected, and no battle starts unless a valid boss was
 selected. This keeps the original random mode intact while providing a direct
 way to test against a particular boss.
+
+### November 13, 2026 | **Developer:** `James`
+
+#### Stagger Feature
+  Adds a Stagger feature to the boss battle. Cards now build up a stagger meter on the boss. When the meter fills, the boss is staggered: the next hit against it deals bonus damage, and the boss loses its next attack. The feature touches Enemy, the three damaging card classes( `Magic`, `Physical`, `Demi` ) , `Deck`, `BattleEngine`.
+
+- MaxStagger = 30 (Adjustable)
+- BonusDamage = 20 (Adjustable)
+- Duration = 1 hit, then the boss skip 1 attack
+
+| Methods | Status | What changed / Added |
+|---|---:|---|
+| addStaggerPTS(int amount) | Added | Adds points to the meter, caps it at the maximum, starts the stagger when full, and wastes points if already staggered. | 
+| getStaggerMeter() | Added | Returns the current meter value for the status line printed by cards. |
+| getMaxStagger() | Added | Returns the meter maximum. |
+| takeDamage(int amount) | Modified | Applies the bonus damage to the first hit while staggered, and consumes the stagger. |
+| takeDamage1(int amount)) | Modified | Now the shared HP-loss method used after any bonus is applied. HP is kept at 0 or above. |
+| endTurn() | Added | Marks the boss to skip its attack after a stagger and resets the meter. |
+| attack(Player p) | Modified | Returns early with a message when skipTurn is set, so a staggered boss deals no damage. |
+
+### PhysicalCard.java
+
+| Method | Status | What changed |
+|---|---|---|
+| Constructor | Modified | Takes a new `StaggerFiller` parameter. |
+| `play(Player, Enemy)` | Modified | Deals damage first, then calls `boss.addStaggerPTS()`, then prints the meter status. |
+
+### MagicCard.java
+
+| Method | Status | What changed |
+|---|---|---|
+| Constructor | Modified | Takes a new `StaggerFiller` parameter. |
+| `play(Player, Enemy)` | Modified | Deals damage, heals, restores mana, then adds stagger points and prints the meter status. |
+
+### DemiCard.java
+
+| Method | Status | What changed |
+|---|---|---|
+| Constructor | Modified | Takes a new `StaggerFill` parameter. |
+| `play(Player, Enemy)` | Modified | Calculates the percentage damage, applies it, then adds stagger points. The printed damage includes `getBonusdamage()`. |
+
+### Deck.java
+
+| Method | Status | What changed |
+|---|---|---|
+| Constructor | Modified | Physical, Magic and Demi cards now pass a stagger value. Five StaggerCard entries are added but commented out. |
+
+### Attributes Added / Enemy Class
+
+-  int staggerMeter 
+-  int MaxStagger 
+-  int staggerTurns 
+-  boolean skipTurn
+-  int bonusDamage
+-  boolean BonusDamageUsed
+
+### Attributes Added / DemiCard, MagicCard, PhysicalCard Classes
+
+-  int StaggerFiller
+
+  
+
+
+ 
+

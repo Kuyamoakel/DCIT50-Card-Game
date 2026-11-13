@@ -137,6 +137,7 @@ public class BattleEngine {
                     boss.isInflicted();
                     boss.rageMode();
                     if (!boss.isDead()) {
+                        boss.endTurn();
                         boss.attack(player);
                     }
                     player.restoreMana(1);
